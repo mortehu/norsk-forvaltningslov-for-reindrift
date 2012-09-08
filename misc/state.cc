@@ -1,3 +1,4 @@
+#include <string.h>
 #include <stdexcept>
 #include <iostream>
 #include <string>
@@ -44,7 +45,7 @@ namespace cls
 	static HDC   s_DeviceContext;
 	static HGLRC s_RenderContext;
 
-	static long PASCAL render_window_callback(HWND p_Window, UINT p_Message, 
+	static long PASCAL render_window_callback(HWND p_Window, UINT p_Message,
 		UINT p_WParam, LONG p_LParam)
 	{
 		switch(p_Message)
@@ -96,7 +97,7 @@ namespace cls
 
 		if(!(s_Display = XOpenDisplay(NULL)))
 			throw std::runtime_error(
-				  std::string("Failed to open display: ") 
+				  std::string("Failed to open display: ")
 				+ std::string(getenv("DISPLAY")));
 
 		if(!glXQueryExtension(s_Display, &l_Dummy, &l_Dummy))
@@ -135,7 +136,7 @@ namespace cls
 
 		if(!RegisterClass(&l_WindowClass))
 			throw std::runtime_error("Unable to register window class");
-	
+
 		if(!(s_Window = CreateWindow("RenderWindowClass", "RenderWindow",
 			WS_POPUP, 0, 0, s_Width, s_Height, NULL, NULL,
 			GetModuleHandle(NULL), NULL)))
@@ -196,7 +197,7 @@ namespace cls
 		std::cerr << "Entering state `" << p_State->m_Name << "'..." << std::endl;
 
 		s_Quit = false;
-		
+
 		p_State->m_Parent = s_CurrentState;
 		s_CurrentState = p_State;
 
@@ -210,7 +211,7 @@ namespace cls
 
 			gettimeofday(&l_TimeOfDay, NULL);
 
-			s_CurrentState->m_StartTime = l_TimeOfDay.tv_sec * 1000 
+			s_CurrentState->m_StartTime = l_TimeOfDay.tv_sec * 1000
 			                            + l_TimeOfDay.tv_usec / 1000;
 		}
 
@@ -234,7 +235,7 @@ namespace cls
 					XEvent l_Event;
 
 					XNextEvent(s_Display, &l_Event);
-				
+
 					switch(l_Event.type)
 					{
 					case KeyPress:
@@ -251,7 +252,9 @@ namespace cls
 
 					case ConfigureNotify:
 
-						// resize(l_Event.xconfigure.width, l_Event.xconfigure.height);
+                                                {
+                                                  glViewport ((l_Event.xconfigure.width - l_Event.xconfigure.height * 4 / 3) * 0.5, 0, l_Event.xconfigure.height * 4 / 3, l_Event.xconfigure.height);
+                                                }
 
 						break;
 					}
@@ -273,11 +276,11 @@ namespace cls
 			}
 		}
 	}
-	
+
 	void state::leave()
 	{
 		this->on_leave();
-		
+
 		s_CurrentState = this->m_Parent;
 
 		if(!s_CurrentState)
@@ -323,7 +326,7 @@ namespace cls
 	state::~state()
 	{
 	}
-	
+
 	void state::on_enter(void* p_Parameter)
 	{
 	}

@@ -1,9 +1,6 @@
 CPPFLAGS = -I. -Iinclude -DX11 # -DHAS_MAGICK
-CXXFLAGS = -O3 -g -Wall -Wid-clash-8 -Wpointer-arith -Wcast-qual \
-	-Wcast-align -Wwrite-strings -Wconversion -Wstrict-prototypes \
-	-Wmissing-prototypes -Wmissing-declarations -Wnested-externs \
-	-Woverloaded-virtual -ffast-math
-LDFLAGS = -O3 -L-lX11 -lGL -lstdc++ # `Magick++-config --libs`
+CXXFLAGS = -O3 -g -Wall
+LDFLAGS = -lX11 -lGL -lstdc++ # `Magick++-config --libs`
 OBJECTS = \
 	states/mushroom.o states/intro.o states/space0.o states/base.o \
 	misc/profiler.o misc/image.o misc/sound.o misc/common.o misc/state.o \
@@ -18,16 +15,17 @@ OBJECTS_DEMO = $(OBJECTS) demo.o
 LDFLAGS_DEMO = $(LDFLAGS) \
 	-lvorbis \
 	-lvorbisfile \
-	/usr/lib/libjpeg.a \
-	/usr/lib/libpng.a \
-	/usr/lib/libz.a
+        -lasound \
+        -ljpeg \
+        -lpng \
+        -lz \
+        -lX11
 
 all: $(OBJECTS) demo
 
 demo: $(OBJECTS_DEMO)
 	@echo Linking demo...
 	@$(CXX) $(OBJECTS_DEMO) $(LDFLAGS_DEMO) $(OUTPUT_OPTION)
-	@strip demo
 
 clean:
 	@-rm $(OBJECTS) demo demo.o

@@ -5,183 +5,157 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <limits.h>
-#ifdef WIN32
-#else
-#	include <sys/ioctl.h>
-#	include <sys/soundcard.h>
-#	include <unistd.h>
-#endif
+#include <alsa/asoundlib.h>
+#include <err.h>
 
 #include <common.h>
 #include <sound.h>
 
 namespace cls
 {
-	char*  sound::s_Buffer;
-	size_t sound::s_BufferSize;
-	size_t sound::s_Offset;
-	int    sound::s_FileDescriptor = -1;
-	bool   sound::s_EOF;
-	sound* sound::s_Stream = NULL;
+  static snd_pcm_t* playback_handle = 0;
+  static snd_pcm_sw_params_t* sw_params = 0;
+  static snd_pcm_hw_params_t* hw_params = 0;
+  static snd_pcm_sframes_t buffer_size = 0;
 
-	void sound::init()
-	{
-		std::cerr << "Opening /dev/dsp...";
-		s_FileDescriptor = open("/dev/dsp", O_WRONLY);
-		std::cerr << std::endl;
+  static snd_pcm_sframes_t written = 0;
+  static snd_pcm_sframes_t delay = 0;
 
-		if(s_FileDescriptor < 0)
-		{
-			s_FileDescriptor = -1;
+  static unsigned int rate = 44100;
 
-			throw std::runtime_error(cls::system_error());
-		}
-	}
+  char*  sound::s_Buffer;
+  size_t sound::s_BufferSize;
+  int    sound::s_FileDescriptor = -1;
+  bool   sound::s_EOF;
+  sound* sound::s_Stream = NULL;
 
-	void sound::stream_open(sound& p_Sound)
-	{
-#ifdef WIN32
-		// XXX
-#else
-		if(s_FileDescriptor == -1)
-			throw std::runtime_error("Audio device not open");
-			
-		int l_Format;
+  void sound::init()
+  {
+    unsigned int buffer_time = 50000;
+    const char* device;
+    int err;
 
-		// XXX: what about unsigned and mu-/a-law formats?
+    device = getenv("ALSA_DEVICE");
 
-		if(p_Sound.m_SampleBitCount == 16 && !p_Sound.m_BigEndian)
-			l_Format = AFMT_S16_LE;
-		else if(p_Sound.m_SampleBitCount == 16 && p_Sound.m_BigEndian)
-			l_Format = AFMT_S16_BE;
-		else if(p_Sound.m_SampleBitCount == 8)
-			l_Format = AFMT_S8;
-#ifdef AFMT_S32_LE
-		else if(p_Sound.m_SampleBitCount == 32 && !p_Sound.m_BigEndian)
-			l_Format = AFMT_S32_LE;
-		else if(p_Sound.m_SampleBitCount == 32 && p_Sound.m_BigEndian)
-			l_Format = AFMT_S32_BE;
-#endif
-		else
-			throw std::runtime_error("Audio format not supported");
+    if(!device)
+      device = "default";
 
-		if(-1 == ioctl(s_FileDescriptor, SNDCTL_DSP_SETFMT, &l_Format))
-			throw std::runtime_error( 
-				  std::string("Failed to set audio format: ") 
-				+ cls::system_error());
-		
-		int l_ChannelCount = p_Sound.m_ChannelCount;
+    if(0 > (err = snd_pcm_open(&playback_handle, device,
+            SND_PCM_STREAM_PLAYBACK, 0/*SND_PCM_NONBLOCK*/)))
+      errx(EXIT_FAILURE, "Audio: Cannot open device %s: %s", device, snd_strerror(err));
 
-		if(-1 == ioctl(s_FileDescriptor, SNDCTL_DSP_CHANNELS, &l_ChannelCount))
-			throw std::runtime_error( 
-				  std::string("Failed to set channel count: ") 
-				+ cls::system_error());
+    if(0 > (err = snd_pcm_sw_params_malloc(&sw_params)))
+      errx(EXIT_FAILURE, "Audio: Could not allocate software parameter structure: %s",
+          snd_strerror(err));
 
-		int l_SampleRate = p_Sound.m_SampleRate;
+    if(0 > (err = snd_pcm_hw_params_malloc(&hw_params)))
+      errx(EXIT_FAILURE, "Audio: Could not allocate hardware parameter structure: %s",
+          snd_strerror(err));
 
-		if(-1 == ioctl(s_FileDescriptor, SNDCTL_DSP_SPEED, &l_SampleRate))
-			throw std::runtime_error( 
-				  std::string("Failed to set sample rate: ")
-				+ cls::system_error());
+    if(0 > (err = snd_pcm_hw_params_any(playback_handle, hw_params)))
+      errx(EXIT_FAILURE, "Audio: Could not initializa hardware parameters: %s",
+          snd_strerror(err));
 
-		s_Stream = &p_Sound;
+    if(0 > (err = snd_pcm_hw_params_set_access(playback_handle, hw_params,
+            SND_PCM_ACCESS_RW_INTERLEAVED)))
+      errx(EXIT_FAILURE, "Audio: Could not set access type: %s", snd_strerror(err));
 
-		struct audio_buf_info l_AudioBufInfo;
+    if(0 > (err = snd_pcm_hw_params_set_format(playback_handle, hw_params,
+            SND_PCM_FORMAT_S16)))
+      errx(EXIT_FAILURE, "Audio: Could not set sample format to signed 16 bit "
+          "native endian: %s", snd_strerror(err));
 
-		if(-1 == ioctl(s_FileDescriptor, SNDCTL_DSP_GETOSPACE, &l_AudioBufInfo))
-			throw std::runtime_error(
-				  std::string("Failed to get buffer size: ") 
-				+ cls::system_error());
+    if(0 > (err = snd_pcm_hw_params_set_rate_near(playback_handle, hw_params,
+            &rate, 0)))
+      errx(EXIT_FAILURE, "Audio: Could not set sample rate %uHz: %s", rate,
+          snd_strerror(err));
 
-		s_BufferSize = l_AudioBufInfo.bytes;
+    if(0 > (err = snd_pcm_hw_params_set_channels(playback_handle, hw_params, 2)))
+      errx(EXIT_FAILURE, "Audio: Could not set channel count to %u: %s",
+          2, snd_strerror(err));
 
-		s_Buffer = new char[s_BufferSize];
+    snd_pcm_hw_params_set_buffer_time_near(playback_handle, hw_params, &buffer_time, 0);
 
-		s_EOF = false;
-		s_Offset = 0;
-#endif
-	}
+    if(0 > (err = snd_pcm_hw_params(playback_handle, hw_params)))
+      errx(EXIT_FAILURE, "Audio: Could not set hardware parameters: %s", snd_strerror(err));
 
-	void sound::stream_update()
-	{
-#ifdef WIN32
-		// XXX
-#else
-		if(s_FileDescriptor == -1)
-			return;
+    fprintf(stderr, "Buffer time is %.3f seconds\n", buffer_time / 1.0e6);
 
-		struct audio_buf_info l_AudioBufInfo;
+    if(0 > (err = snd_pcm_sw_params_current(playback_handle, sw_params)))
+      errx(EXIT_FAILURE, "Audio: Could not initialize software parameters: %s",
+          snd_strerror(err));
 
-		ioctl(s_FileDescriptor, SNDCTL_DSP_GETOSPACE, &l_AudioBufInfo);
+    snd_pcm_sw_params_set_start_threshold(playback_handle, sw_params, 0);
+    snd_pcm_sw_params_set_avail_min(playback_handle, sw_params, 1024);
 
-		size_t l_Size;
+    snd_pcm_uframes_t min;
+    snd_pcm_sw_params_get_avail_min(sw_params, &min);
+    fprintf(stderr, "Minimum %u\n", (unsigned) min);
 
-		if(s_EOF)
-		{
-			memset(s_Buffer, 0, l_AudioBufInfo.bytes);
+    if(0 > (err = snd_pcm_sw_params(playback_handle, sw_params)))
+      errx(EXIT_FAILURE, "Audio: Could not set software parameters: %s",
+          snd_strerror(err));
 
-			l_Size = l_AudioBufInfo.bytes;
-		}
-		else
-		{
-			l_Size = s_Stream->get_data(l_AudioBufInfo.bytes, s_Buffer);
+    buffer_size = snd_pcm_avail_update(playback_handle);
+  }
 
-			if(l_Size < (size_t) l_AudioBufInfo.bytes)
-				s_EOF = true;
-		}
+  void sound::stream_open(sound& p_Sound)
+  {
+    s_Stream = &p_Sound;
+  }
 
-		write(s_FileDescriptor, s_Buffer, l_Size);
+  void sound::stream_update()
+  {
+    size_t avail, amount;
+    int err;
+    char *data;
 
-		s_Offset += l_Size;
-#endif
-	}
+    if (!s_Stream)
+      return;
 
-	size_t sound::stream_position()
-	{
-#ifdef WIN32
-		// XXX
+    avail = snd_pcm_avail (playback_handle) * 4;
 
-		return 0;
-#else
-		int l_Delay;
+    if (!avail)
+      return;
 
-		ioctl(s_FileDescriptor, SNDCTL_DSP_GETODELAY, &l_Delay);
+    data = new char[avail];
 
-		return (size_t) ((uint64_t) (s_Offset - l_Delay) * 1000 / 
-			(s_Stream->m_SampleRate 
-				* (s_Stream->m_SampleBitCount / CHAR_BIT * s_Stream->m_ChannelCount)));
-#endif
-	}
+    amount = s_Stream->get_data(avail, data);
 
-	void sound::stream_close()
-	{
-#ifdef WIN32
-		// XXX
-#else
-		if(s_FileDescriptor != -1)
-			close(s_FileDescriptor);
+    if(amount < avail)
+      s_EOF = true;
 
-		s_FileDescriptor = -1;
-#endif
-	}
+    err = snd_pcm_writei (playback_handle, data, amount / 4);
 
-	sound::sound()
-	{
-		m_SampleBitCount = 16;
-		m_SampleRate = 44100;
-		m_ChannelCount = 2;
-		m_BigEndian = false;
-	}
+    free (data);
 
-	sound::~sound()
-	{
-	}
+    written += err;
+  }
 
-	size_t sound::get_data(const size_t p_Size, void* r_Data)
-	{
-		memset(&r_Data, 0, p_Size);
+  size_t sound::stream_position()
+  {
+    snd_pcm_delay(playback_handle, &delay);
 
-		return p_Size;
-	}
+    return (written - delay) * 1000 / 44100;
+  }
+
+  void sound::stream_close()
+  {
+  }
+
+  sound::sound()
+  {
+  }
+
+  sound::~sound()
+  {
+  }
+
+  size_t sound::get_data(const size_t p_Size, void* r_Data)
+  {
+    memset(&r_Data, 0, p_Size);
+
+    return p_Size;
+  }
 };
 

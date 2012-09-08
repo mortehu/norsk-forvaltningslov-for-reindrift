@@ -1,6 +1,7 @@
 #ifndef _BEZIER_H_
 #define _BEZIER_H_
 
+#include <math.h>
 #include <stdlib.h>
 
 namespace cls

@@ -1,3 +1,4 @@
+#include <string.h>
 #include <stdexcept>
 #include <iostream>
 #include <algorithm>
@@ -34,9 +35,9 @@ namespace cls
 		{
 			vector3& l_Source = m_StaticBlob->m_Vertices[i_Vertex];
 
-			m_StaticBlob->m_Vertices[i_Vertex] = vector3( 
-				(sin(2000 / 150.0 + l_Source(1) * M_PI * 2) * 0.1 + 0.9) * l_Source(0), 
-				(sin(2000 / 200.0 + l_Source(2) * M_PI    ) * 0.1 + 0.9) * l_Source(1), 
+			m_StaticBlob->m_Vertices[i_Vertex] = vector3(
+				(sin(2000 / 150.0 + l_Source(1) * M_PI * 2) * 0.1 + 0.9) * l_Source(0),
+				(sin(2000 / 200.0 + l_Source(2) * M_PI    ) * 0.1 + 0.9) * l_Source(1),
 				(sin(2000 / 250.0 + l_Source(0) * M_PI * 2) * 0.1 + 0.9) * l_Source(2));
 		}
 
@@ -137,7 +138,7 @@ namespace cls
 		l_Targets[2][11] = vector3(-432.402, 716.705, 68.8307);
 		l_Eyes[2][12] = vector3(-491.454, 562.399, 68.0474);
 		l_Targets[2][12] = vector3(-481.801, 610.999, 74.7514);
-		
+
 		l_Eyes[3][0] = vector3(752.122, 809.183, 80);
 		l_Targets[3][0] = vector3(711.736, 779.704, 80);
 		l_Eyes[3][1] = vector3(699.87, 614.685, 96.3456);
@@ -215,16 +216,16 @@ namespace cls
 
 		vector3 l_Position, l_Direction;
 		float l_Roll = 0, l_FOV = 80;
-		
+
 		if(l_Time < BEAT * 80)
 		{
 			l_Position = m_EyeSplines[0]->get_point(l_Time / (BEAT * 80));
 
 			if(l_Time < BEAT * 48)
 				l_Position += vector3(
-					(double) rand() / RAND_MAX * 2.0 - 1.0, 
-					(double) rand() / RAND_MAX * 2.0 - 1.0, 
-					(double) rand() / RAND_MAX * 2.0 - 1.0) * (1 - fmod(l_Time, BEAT) / BEAT); 
+					(double) rand() / RAND_MAX * 2.0 - 1.0,
+					(double) rand() / RAND_MAX * 2.0 - 1.0,
+					(double) rand() / RAND_MAX * 2.0 - 1.0) * (1 - fmod(l_Time, BEAT) / BEAT);
 
 			l_Direction = m_TargetSplines[0]->get_point(l_Time / (BEAT * 80)) - l_Position;
 		}
@@ -235,8 +236,8 @@ namespace cls
 				? (cos(l_Time / 600.0))
 				: (cos(-l_Time / 600.0))),
 				((fmod(l_Time, BEAT * 2) < BEAT)
-				? sin(l_Time / 600.0) 
-				: sin(-l_Time / 600.0)), 
+				? sin(l_Time / 600.0)
+				: sin(-l_Time / 600.0)),
 				sin(l_Time / 200.0) * 0.4 - 0.3);
 			l_Offset.normalize();
 			l_Offset *= 190.0;
@@ -249,7 +250,7 @@ namespace cls
 		{
 			vector3 l_Offset(
 				cos(l_Time / 600.0),
-				sin(l_Time / 595.0), 
+				sin(l_Time / 595.0),
 				sin(l_Time / 200.0) * 0.3 - 0.2);
 			l_Offset.normalize();
 			l_Offset *= 100.0;
@@ -271,7 +272,7 @@ namespace cls
 		{
 			vector3 l_Offset(
 				cos(l_Time / 1000.0),
-				sin(l_Time / 980.0), 
+				sin(l_Time / 980.0),
 				sin(l_Time / 300.0) * 0.6);
 			l_Offset.normalize();
 			l_Offset *= 90.0;
@@ -392,7 +393,7 @@ namespace cls
 			l_String[size_t(strlen(l_Text) * l_LengthFactor)] = 0;
 			font::put_text(
 				vector2(strlen(l_String) * -0.025, -0.75),
-				vector2(strlen(l_String) *  0.025, -0.8), 
+				vector2(strlen(l_String) *  0.025, -0.8),
 				l_String);
 			free(l_String);
 
@@ -403,18 +404,18 @@ namespace cls
 				glColor3f(1, 1, 1);
 
 				font::put_text(
-					vector2(9 * -0.1, 0.6), 
+					vector2(9 * -0.1, 0.6),
 					vector2(9 *  0.1, 0.3),
 					"Greetings");
 
-				const char l_Greets[9][41] = 
+				const char l_Greets[9][41] =
 				{
-					"activator, neon, arcane, chroma, cypho,", 
-					"danner, daxxar, diggz, dropstar, edzes,", 
-					"dvalin, fuglemat, grimmy, grome, guard,", 
-					"guru, gus, ilmari, indh, irvin, raiden,", 
-					"kaktuskaffe, knus, plante, kusma, alge,", 
-					"lavos, longhair, lug00ber, turkey, tmk,", 
+					"activator, neon, arcane, chroma, cypho,",
+					"danner, daxxar, diggz, dropstar, edzes,",
+					"dvalin, fuglemat, grimmy, grome, guard,",
+					"guru, gus, ilmari, indh, irvin, raiden,",
+					"kaktuskaffe, knus, plante, kusma, alge,",
+					"lavos, longhair, lug00ber, turkey, tmk,",
 					"norwolf, kravitz, snax, nelius, sirkew,",
 					"silmaril, russlander, saftmelon, yannz,",
 					"proteque, snillfisk, wolfram, titanstar",
@@ -422,9 +423,9 @@ namespace cls
 
 				for(size_t i = 0; i < 9; i++)
 				{
-					font::put_text( 
-						vector2(-0.9, 0.1 + i * -0.1), 
-						vector2(0.9,  i * -0.1), 
+					font::put_text(
+						vector2(-0.9, 0.1 + i * -0.1),
+						vector2(0.9,  i * -0.1),
 						l_Greets[i]);
 				}
 				if(l_Time > BEAT * 256)
@@ -494,9 +495,9 @@ namespace cls
 		{
 			vector3& l_Source = m_RefSphere->m_Vertices[i_Vertex];
 
-			m_DynamicBlob2->m_Vertices[i_Vertex] = vector3( 
-				(sin(p_Time / 150.0 + l_Source(1) * M_PI * 3) * 0.3 + 0.7) * l_Source(0), 
-				(sin(p_Time / 200.0 + l_Source(2) * M_PI * 2) * 0.3 + 0.7) * l_Source(1), 
+			m_DynamicBlob2->m_Vertices[i_Vertex] = vector3(
+				(sin(p_Time / 150.0 + l_Source(1) * M_PI * 3) * 0.3 + 0.7) * l_Source(0),
+				(sin(p_Time / 200.0 + l_Source(2) * M_PI * 2) * 0.3 + 0.7) * l_Source(1),
 				(sin(p_Time / 250.0 + l_Source(0) * M_PI * 3) * 0.3 + 0.7) * l_Source(2));
 		}
 
@@ -514,7 +515,7 @@ namespace cls
 		glScalef(50, 50, 50);
 		m_DynamicBlob2->render(m_Camera);
 		glPopMatrix();
-		
+
 		glDepthMask(GL_FALSE);
 
 		particle l_Particle = particle(vector3(0, 0, 0), color(64, 64, 128), 10);
@@ -615,7 +616,7 @@ namespace cls
 
 			glPushMatrix();
 			glRotatef(l_Angle1, 1, 0, 0);
-			
+
 				glPushMatrix();
 				glTranslatef(0, 0, 32);
 				glScalef(20, 20, 20);
@@ -700,7 +701,7 @@ namespace cls
 					glPopMatrix();
 
 				glPopMatrix();
-			
+
 			glPopMatrix();
 
 		glPopMatrix();
@@ -722,9 +723,9 @@ namespace cls
 		{
 			vector3& l_Source = m_RefSphere->m_Vertices[i_Vertex];
 
-			m_DynamicBlob->m_Vertices[i_Vertex] = vector3( 
-				(sin(p_Time / 150.0 + l_Source(1) * M_PI * 2) * 0.3 + 0.7) * l_Source(0), 
-				(sin(p_Time / 200.0 + l_Source(2) * M_PI    ) * 0.3 + 0.7) * l_Source(1), 
+			m_DynamicBlob->m_Vertices[i_Vertex] = vector3(
+				(sin(p_Time / 150.0 + l_Source(1) * M_PI * 2) * 0.3 + 0.7) * l_Source(0),
+				(sin(p_Time / 200.0 + l_Source(2) * M_PI    ) * 0.3 + 0.7) * l_Source(1),
 				(sin(p_Time / 250.0 + l_Source(0) * M_PI * 2) * 0.3 + 0.7) * l_Source(2));
 		}
 
@@ -732,11 +733,11 @@ namespace cls
 
 		for(size_t i_Vertex = 0; i_Vertex < m_DynamicBlob->m_VertexCount; i_Vertex++)
 		{
-			m_DynamicBlob->m_TexCoords[0][i_Vertex] = vector2( 
-				m_DynamicBlob->m_Normals[i_Vertex](1) * 0.15 + m_RefSphere->m_TexCoords[0][i_Vertex](0), 
+			m_DynamicBlob->m_TexCoords[0][i_Vertex] = vector2(
+				m_DynamicBlob->m_Normals[i_Vertex](1) * 0.15 + m_RefSphere->m_TexCoords[0][i_Vertex](0),
 				m_DynamicBlob->m_Normals[i_Vertex](2) * 0.15 + m_RefSphere->m_TexCoords[0][i_Vertex](1));
-			m_DynamicBlob->m_TexCoords[1][i_Vertex] = vector2( 
-				m_DynamicBlob->m_Normals[i_Vertex](0) * 0.5 + 0.5, 
+			m_DynamicBlob->m_TexCoords[1][i_Vertex] = vector2(
+				m_DynamicBlob->m_Normals[i_Vertex](0) * 0.5 + 0.5,
 				m_DynamicBlob->m_Normals[i_Vertex](2) * 0.5 + 0.5);
 		}
 
@@ -768,7 +769,7 @@ namespace cls
 
 		float l_Elevation[21][16];
 		vector3 l_Normals[21][16];
-		
+
 		for(size_t x = 0; x < 21; x++)
 			for(size_t y = 0; y < 16; y++)
 			{
@@ -777,13 +778,13 @@ namespace cls
 				float l_DeltaSinus = cos(p_Time * 0.005 + x / 1.5) * 0.8 + cos(p_Time * 0.008 + x * 1.5) * 0.2;
 				float l_DeltaCosinus = -sin(p_Time * 0.006 + y / 1.4) * 0.8 - sin(p_Time * 0.009 + y * 2) * 0.2;
 
-				l_Elevation[x][y] = -24 + 
+				l_Elevation[x][y] = -24 +
 				                  + l_Sinus * 3.5
 				                  + l_Cosinus * 3.5;
 
 				l_Normals[x][y] = vector3(
-					-l_DeltaSinus,  
-					-l_DeltaCosinus, 
+					-l_DeltaSinus,
+					-l_DeltaCosinus,
 					2).normalize();
 			}
 
@@ -815,7 +816,7 @@ namespace cls
 		vector3 l_Direction = (l_Position - m_Camera.m_Position).normalize();
 
 		float l_Angle = acos(-l_Direction * p_Normal);
-		
+
 		//l_Angle = asin(1.333 * sin(l_Angle));
 		l_Angle = l_Angle / 1.333;
 
@@ -830,14 +831,14 @@ namespace cls
 		l_Distance[4] = (-128 - vector3(0, 0, 1) * l_Position) / (vector3(0, 0, 1) * l_Direction);
 		int i_Shortest = -1;
 		float l_Shortest = HUGE_VAL;
-		
+
 		for(size_t i = 0; i < 5; i++)
 			if(l_Distance[i] < l_Shortest && l_Distance[i] > 0)
 			{
 				i_Shortest = i;
 				l_Shortest = l_Distance[i_Shortest];
 			}
-		
+
 		if(i_Shortest == -1)
 			throw std::runtime_error("Under water");
 

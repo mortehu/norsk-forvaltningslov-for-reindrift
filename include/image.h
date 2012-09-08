@@ -1,6 +1,8 @@
 #ifndef _IMAGE_H_
 #define _IMAGE_H_
 
+#include <GL/gl.h>
+
 #include <iostream>
 #include <assert.h>
 #include <stdlib.h>
@@ -37,17 +39,17 @@ namespace cls
 	public:
 		enum pixel_format
 		{
-			RGB = 1, RGBA = 2, GRAY = 3, 
+			RGB = 1, RGBA = 2, GRAY = 3,
 		};
-	
+
 	private:
-		size_t       m_GLHandle;
+		GLuint       m_GLHandle;
 		bool         m_XRepeat, m_YRepeat;
 		bool         m_MipMap;
-		pixel_format m_PixelFormat;	
+		pixel_format m_PixelFormat;
 		size_t       m_Width, m_Height;
 		dataproxy*   m_DataProxy;
-	
+
 	public:
 		image()
 		{
@@ -112,12 +114,12 @@ namespace cls
 
 		size_t get_bytes_per_pixel() const
 		{
-			return (m_PixelFormat == RGB)  ? 3 
-			     : (m_PixelFormat == RGBA) ? 4 
-				 : (m_PixelFormat == GRAY) ? 1 
+			return (m_PixelFormat == RGB)  ? 3
+			     : (m_PixelFormat == RGBA) ? 4
+				 : (m_PixelFormat == GRAY) ? 1
 				 : 0;
 		}
-	
+
 		void set_geometry(const size_t p_Width, const size_t p_Height)
 		{
 			m_Width = p_Width;
@@ -156,7 +158,7 @@ namespace cls
 			}
 
 			m_DataProxy = p_Image.m_DataProxy;
-			
+
 			set_geometry(p_Image.get_width(), p_Image.get_height());
 			set_pixel_format(p_Image.get_pixel_format());
 

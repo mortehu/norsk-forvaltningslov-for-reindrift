@@ -1,15 +1,15 @@
-#define VECTOR_MACROS
-
 #include <math.h>
 
 #include <common.h>
 #include <vector.h>
 #include <raytracer.h>
 
+#define VECTOR_MACROS
+
 namespace cls
 {
-	bool ray::intersect( 
-		const vector3& p_Mins, 
+	bool ray::intersect(
+		const vector3& p_Mins,
 		const vector3& p_Maxs) const
 	{
 		for(size_t i = 0; i < 3; i++)
@@ -59,11 +59,11 @@ namespace cls
 		return true;
 	}
 
-	float ray::hit( 
-		float& r_Alpha, float& r_Beta, 
-		const vector3& p_Point0, 
-		const vector3& p_Point1, 
-		const vector3& p_Point2, 
+	float ray::hit(
+		float& r_Alpha, float& r_Beta,
+		const vector3& p_Point0,
+		const vector3& p_Point1,
+		const vector3& p_Point2,
 		const vector3& p_Normal) const
 	{
 		const float l_DotProduct = *this * p_Normal;
@@ -71,7 +71,7 @@ namespace cls
 		if(l_DotProduct < EPSILON && l_DotProduct > -EPSILON)
 			return HUGE_VAL;
 
-		const float l_Distance = (p_Normal * p_Point0 - p_Normal * m_Point) 
+		const float l_Distance = (p_Normal * p_Point0 - p_Normal * m_Point)
 		                       / l_DotProduct;
 
 		if(l_Distance < 0)
@@ -87,18 +87,18 @@ namespace cls
 		else
 			i1 = 0, i2 = 1;
 
-		const vector2 l_Point( 
-			m_Point(i1) + (*this)(i1) * l_Distance, 
+		const vector2 l_Point(
+			m_Point(i1) + (*this)(i1) * l_Distance,
 			m_Point(i2) + (*this)(i2) * l_Distance);
 
-		const vector3 l_U( 
-			l_Point(0) - p_Point0(i1), 
-			p_Point1(i1) - p_Point0(i1), 
+		const vector3 l_U(
+			l_Point(0) - p_Point0(i1),
+			p_Point1(i1) - p_Point0(i1),
 			p_Point2(i1) - p_Point0(i1));
 
-		const vector3 l_V( 
-			l_Point(1) - p_Point0(i2), 
-			p_Point1(i2) - p_Point0(i2), 
+		const vector3 l_V(
+			l_Point(1) - p_Point0(i2),
+			p_Point1(i2) - p_Point0(i2),
 			p_Point2(i2) - p_Point0(i2));
 
 		if(l_U(1) == 0)
@@ -112,7 +112,7 @@ namespace cls
 		}
 		else
 		{
-			r_Beta = (l_V(0) * l_U(1) - l_U(0) * l_V(1)) 
+			r_Beta = (l_V(0) * l_U(1) - l_U(0) * l_V(1))
 			       / (l_V(2) * l_U(1) - l_U(2) * l_V(1));
 
 			if(r_Beta < 0 || r_Beta > 1)

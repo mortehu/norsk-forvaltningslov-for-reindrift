@@ -16,8 +16,6 @@
 #include <files/quake3_bsp.h>
 #include <files/swap.h>
 
-namespace quake3
-{
 	template<class type>
 	static void CopyLump(FILE* p_File, const header p_Header, int32_t pi_Lump,
 			type*& r_Dest, size_t& r_Count)
@@ -36,7 +34,7 @@ namespace quake3
 	}
 
 	template<>
-	static void CopyLump <visibility> (FILE* p_File, const header p_Header, 
+	void CopyLump <visibility> (FILE* p_File, const header p_Header,
 			int32_t pi_Lump, visibility*& r_Dest, size_t& r_Count)
 	{
 		r_Count = p_Header.m_Lumps[pi_Lump].m_FileLength - 2 * sizeof(int32_t);
@@ -52,11 +50,11 @@ namespace quake3
 	}
 
 	template<>
-	static void byte_swap <header> (header& p_Val)
+	void byte_swap <header> (header& p_Val)
 	{
 		byte_swap(p_Val.m_Version);
 
-		for(size_t i = 0; i < quake3::c_LumpCount; i++)
+		for(size_t i = 0; i < c_LumpCount; i++)
 		{
 			byte_swap(p_Val.m_Lumps[i].m_FileOffset);
 			byte_swap(p_Val.m_Lumps[i].m_FileLength);
@@ -64,7 +62,7 @@ namespace quake3
 	}
 
 	template<>
-	static void byte_swap <vector3> (vector3& p_Val)
+	void byte_swap <vector3> (vector3& p_Val)
 	{
 		byte_swap(p_Val(0));
 		byte_swap(p_Val(1));
@@ -72,28 +70,28 @@ namespace quake3
 	}
 
 	template<>
-	static void byte_swap <vector2> (vector2& p_Val)
+	void byte_swap <vector2> (vector2& p_Val)
 	{
 		byte_swap(p_Val(0));
 		byte_swap(p_Val(1));
 	}
 
 	template<>
-	static void byte_swap <texture> (texture& p_Val)
+	void byte_swap <texture> (texture& p_Val)
 	{
 		byte_swap(p_Val.m_Flags);
 		byte_swap(p_Val.m_Content);
 	}
 
 	template<>
-	static void byte_swap <plane> (plane& p_Val)
+	void byte_swap <plane> (plane& p_Val)
 	{
 		byte_swap(p_Val.m_Normal);
 		byte_swap(p_Val.m_Distance);
 	}
 
 	template<>
-	static void byte_swap <node> (node& p_Val)
+	void byte_swap <node> (node& p_Val)
 	{
 		byte_swap(p_Val.mi_Plane);
 		array_swap(p_Val.m_Children);
@@ -102,7 +100,7 @@ namespace quake3
 	}
 
 	template<>
-	static void byte_swap <leaf> (leaf& p_Val)
+	void byte_swap <leaf> (leaf& p_Val)
 	{
 		byte_swap(p_Val.m_Cluster);
 		byte_swap(p_Val.m_Area);
@@ -115,7 +113,7 @@ namespace quake3
 	}
 
 	template<>
-	static void byte_swap <model> (model& p_Val)
+	void byte_swap <model> (model& p_Val)
 	{
 		array_swap(p_Val.m_Mins);
 		array_swap(p_Val.m_Maxs);
@@ -126,7 +124,7 @@ namespace quake3
 	}
 
 	template<>
-	static void byte_swap <brush> (brush& p_Val)
+	void byte_swap <brush> (brush& p_Val)
 	{
 		byte_swap(p_Val.mi_BrushSide);
 		byte_swap(p_Val.m_BrushSideCount);
@@ -134,14 +132,14 @@ namespace quake3
 	}
 
 	template<>
-	static void byte_swap <brush_side> (brush_side& p_Val)
+	void byte_swap <brush_side> (brush_side& p_Val)
 	{
 		byte_swap(p_Val.mi_Plane);
 		byte_swap(p_Val.mi_Texture);
 	}
 
 	template<>
-	static void byte_swap <vertex> (vertex& p_Val)
+	void byte_swap <vertex> (vertex& p_Val)
 	{
 		byte_swap(p_Val.m_Position);
 		byte_swap(p_Val.m_TextureCoord);
@@ -150,7 +148,7 @@ namespace quake3
 	}
 
 	template<>
-	static void byte_swap <face> (face& p_Val)
+	void byte_swap <face> (face& p_Val)
 	{
 		byte_swap(p_Val.mi_Texture);
 		byte_swap(p_Val.mi_Effect);
@@ -169,17 +167,17 @@ namespace quake3
 	}
 
 	template<>
-	static void byte_swap <lightmap> (lightmap& p_Val)
+	void byte_swap <lightmap> (lightmap& p_Val)
 	{
 	}
 
 	template<>
-	static void byte_swap <light_volume> (light_volume& p_Val)
+	void byte_swap <light_volume> (light_volume& p_Val)
 	{
 	}
 
 	template<>
-	static void byte_swap <visibility> (visibility& p_Val)
+	void byte_swap <visibility> (visibility& p_Val)
 	{
 		// *** Swapped during loading
 	}
@@ -312,17 +310,17 @@ namespace quake3
 			if(l_Face.m_Type != face::Patch)
 				continue;
 
-			cls::bezier<vertex> l_Patch( 
-				l_Face.m_PatchDimensions[0], 
-				l_Face.m_PatchDimensions[1], 
+			cls::bezier<vertex> l_Patch(
+				l_Face.m_PatchDimensions[0],
+				l_Face.m_PatchDimensions[1],
 				&m_Vertices[l_Face.mi_Vertex]);
 
 			(l_Face.m_PatchDimensions[0] *= 4) -= 1;
 			(l_Face.m_PatchDimensions[1] *= 4) -= 1;
 
-			l_Patch.create_vertices( 
-				l_Face.m_PatchDimensions[0], 
-				l_Face.m_PatchDimensions[1], 
+			l_Patch.create_vertices(
+				l_Face.m_PatchDimensions[0],
+				l_Face.m_PatchDimensions[1],
 				&m_Vertices[l_Face.mi_MeshVertex]);
 		}
 	}
@@ -346,7 +344,7 @@ namespace quake3
 		return size_t(-(r_Node + 1));
 	}
 
-	
+
 	static float s_Nearest;
 
 	bool bsp::trace_ray(const signed int pi_Node, const ray p_Ray, color& r_Color)
@@ -368,7 +366,7 @@ namespace quake3
 			for(size_t i_LeafFace = 0;
 			           i_LeafFace < l_Leaf.m_LeafFaceCount; i_LeafFace++)
 			{
-				const int& i_Face = 
+				const int& i_Face =
 					m_LeafFaces[l_Leaf.m_LeafFace + i_LeafFace];
 
 				if(m_Marks[i_Face])
@@ -385,35 +383,35 @@ namespace quake3
 
 					for(signed int i = 0; i < l_Face.m_MeshVertexCount; i += 3)
 					{
-						vertex& l_Vertex0 = m_Vertices[l_Face.mi_Vertex 
+						vertex& l_Vertex0 = m_Vertices[l_Face.mi_Vertex
 							+ m_MeshVertices[l_Face.mi_MeshVertex + i]];
-						vertex& l_Vertex1 = m_Vertices[l_Face.mi_Vertex 
+						vertex& l_Vertex1 = m_Vertices[l_Face.mi_Vertex
 							+ m_MeshVertices[l_Face.mi_MeshVertex + i + 1]];
-						vertex& l_Vertex2 = m_Vertices[l_Face.mi_Vertex 
+						vertex& l_Vertex2 = m_Vertices[l_Face.mi_Vertex
 							+ m_MeshVertices[l_Face.mi_MeshVertex + i + 2]];
 
 						float l_Alpha, l_Beta;
 
 						const float l_Distance = p_Ray.hit(
 							l_Alpha, l_Beta,
-							l_Vertex0.m_Position, 
-							l_Vertex1.m_Position, 
-							l_Vertex2.m_Position, 
+							l_Vertex0.m_Position,
+							l_Vertex1.m_Position,
+							l_Vertex2.m_Position,
 							l_Face.m_Normal);
 
 						if(l_Distance >= s_Nearest)
 							continue;
-						
+
 						s_Nearest = l_Distance;
 
-						const vector2 l_TextureCoord = 
-							  l_Vertex0.m_TextureCoord * (1 - l_Alpha - l_Beta) 
-							+ l_Vertex1.m_TextureCoord * l_Alpha 
+						const vector2 l_TextureCoord =
+							  l_Vertex0.m_TextureCoord * (1 - l_Alpha - l_Beta)
+							+ l_Vertex1.m_TextureCoord * l_Alpha
 							+ l_Vertex2.m_TextureCoord * l_Beta;
 
-						const vector2 l_LightmapCoord = 
-							  l_Vertex0.m_LightmapCoord * (1 - l_Alpha - l_Beta) 
-							+ l_Vertex1.m_LightmapCoord * l_Alpha 
+						const vector2 l_LightmapCoord =
+							  l_Vertex0.m_LightmapCoord * (1 - l_Alpha - l_Beta)
+							+ l_Vertex1.m_LightmapCoord * l_Alpha
 							+ l_Vertex2.m_LightmapCoord * l_Beta;
 
 						const image& l_Texture = m_TextureHandles[l_Face.mi_Texture];
@@ -428,13 +426,13 @@ namespace quake3
 						const size_t   l_LightmapHeight = l_Lightmap.get_height();
 						const size_t   l_LightmapBPP    = l_Lightmap.get_bytes_per_pixel();
 
-						const size_t l_U = size_t(l_TextureCoord(0) * l_TextureWidth) 
+						const size_t l_U = size_t(l_TextureCoord(0) * l_TextureWidth)
 							% l_TextureWidth;
-						const size_t l_V = size_t(l_TextureCoord(1) * l_TextureHeight) 
+						const size_t l_V = size_t(l_TextureCoord(1) * l_TextureHeight)
 							% l_TextureHeight;
-						const size_t l_S = size_t(l_LightmapCoord(0) * l_LightmapWidth) 
+						const size_t l_S = size_t(l_LightmapCoord(0) * l_LightmapWidth)
 							% l_LightmapWidth;
-						const size_t l_T = size_t(l_LightmapCoord(1) * l_LightmapHeight) 
+						const size_t l_T = size_t(l_LightmapCoord(1) * l_LightmapHeight)
 							% l_LightmapHeight;
 
 						const uint8_t l_Red = l_TextureData[
@@ -461,7 +459,7 @@ namespace quake3
 					break;
 
 				case face::Billboard:
-						
+
 					break;
 
 				case face::Patch:
@@ -486,7 +484,7 @@ namespace quake3
 			{
 				if(trace_ray(l_Node.m_Children[1], p_Ray, r_Color))
 				{}//	return true;
-				
+
 				if(trace_ray(l_Node.m_Children[0], p_Ray, r_Color))
 				{}//	return true;
 			}
@@ -570,7 +568,7 @@ namespace quake3
 
 	void bsp::draw_node(const signed int i_Node) const
 	{
-		using namespace quake3;
+		using namespace cls;
 
 		if(i_Node < 0)
 		{
@@ -584,7 +582,7 @@ namespace quake3
 			for(size_t i_LeafFace = 0;
 			           i_LeafFace < l_Leaf.m_LeafFaceCount; i_LeafFace++)
 			{
-				int& i_Face = 
+				int& i_Face =
 					m_LeafFaces[l_Leaf.m_LeafFace + i_LeafFace];
 
 				if(m_Marks[i_Face])
@@ -594,8 +592,8 @@ namespace quake3
 
 				m_Marks[i_Face] = true;
 
-				// *** Preliminary inaccurate backface culling, so we 
-				//     can throw some faces away, without loading their 
+				// *** Preliminary inaccurate backface culling, so we
+				//     can throw some faces away, without loading their
 				//     textures and transforming their vertices.
 
 				if(l_Face.m_Normal * m_Camera.m_Direction > M_PI_4)
@@ -612,7 +610,7 @@ namespace quake3
 
 					for(size_t i_Vertex = 0; i_Vertex < l_Face.m_VertexCount; i_Vertex++)
 					{
-						vertex& l_Vertex = 
+						vertex& l_Vertex =
 							m_Vertices[
 								  l_Face.mi_Vertex
 								+ m_MeshVertices[
@@ -620,7 +618,7 @@ namespace quake3
 
 						glMultiTexCoord2fvARB(GL_TEXTURE0_ARB, l_Vertex.m_TextureCoord.get_data());
 						glMultiTexCoord2fvARB(GL_TEXTURE1_ARB, l_Vertex.m_LightmapCoord.get_data());
-						glArrayElement(l_Face.mi_Vertex + 
+						glArrayElement(l_Face.mi_Vertex +
 							m_MeshVertices[l_Face.mi_MeshVertex + i_Vertex]);
 					}
 
@@ -629,12 +627,12 @@ namespace quake3
 					break;
 
 				case face::Polygon:
-					
+
 					glBegin(GL_POLYGON);
 
 					for(size_t i_Vertex = 0; i_Vertex < l_Face.m_VertexCount; i_Vertex++)
 					{
-						vertex& l_Vertex = 
+						vertex& l_Vertex =
 							m_Vertices[l_Face.mi_Vertex + i_Vertex];
 
 						glMultiTexCoord2fvARB(GL_TEXTURE0_ARB, l_Vertex.m_TextureCoord.get_data());
@@ -647,7 +645,7 @@ namespace quake3
 					break;
 
 				case face::Billboard:
-						
+
 					break;
 
 				case face::Patch:
@@ -732,8 +730,6 @@ namespace quake3
 		m_LightmapCoord += p_Vertex.m_LightmapCoord;
 		m_Normal += p_Vertex.m_Normal;
 		m_Color = p_Vertex.m_Color;
-	
+
 		return *this;
 	}
-}
-

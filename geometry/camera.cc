@@ -24,7 +24,7 @@ namespace cls
 		{
 			// *** Impossible to determine yaw
 
-			throw std::runtime_error("Camera pointing directly upwards");
+			/* throw std::runtime_error("Camera pointing directly upwards"); */
 		}
 		m_Up.normalize();
 		m_Left.normalize();
@@ -49,7 +49,7 @@ namespace cls
 		gluLookAt(
 			m_Position(0), m_Position(1), m_Position(2),
 			m_Position(0) + m_Direction(0),
-			m_Position(1) + m_Direction(1), 
+			m_Position(1) + m_Direction(1),
 			m_Position(2) + m_Direction(2),
 			m_Up(0), m_Up(1), m_Up(2));
 
@@ -81,7 +81,7 @@ namespace cls
 		l_Vectors[7] = p_Maxs;
 
 		for(size_t i = 0; i < 4; i++)
-		{			
+		{
 			if((l_Vectors[0] * m_Normals[i] < m_Distance[i])
 			&& (l_Vectors[1] * m_Normals[i] < m_Distance[i])
 			&& (l_Vectors[2] * m_Normals[i] < m_Distance[i])

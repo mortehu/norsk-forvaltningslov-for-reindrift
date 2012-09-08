@@ -1,6 +1,8 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
+#include <stdint.h>
+
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -19,15 +21,6 @@
 # define M_SQRT1_2	0.70710678118654752440	/* 1/sqrt(2) */
 #endif
 #include <string>
-
-typedef signed long long int   int64_t;
-typedef unsigned long long int uint64_t;
-typedef signed int             int32_t;
-typedef unsigned int           uint32_t;
-typedef signed short           int16_t;
-typedef unsigned short         uint16_t;
-typedef signed char            int8_t;
-typedef unsigned char          uint8_t;
 
 #define EPSILON        2e-6
 #define BEAT           428.5714

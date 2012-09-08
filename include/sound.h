@@ -32,10 +32,10 @@ namespace cls
 
 		static bool is_open()
 		{
-			return (s_FileDescriptor != -1);
+                  return true;
 		}
 
-		// *** Open audio output stream suitable for playing the 
+		// *** Open audio output stream suitable for playing the
 		//     given sound
 
 		static void stream_open(sound& p_Sound);

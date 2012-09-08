@@ -9,8 +9,6 @@
 
 #pragma pack(1)
 
-namespace quake3
-{
 	using cls::vector3;
 	using cls::vector2;
 	using cls::color;
@@ -149,13 +147,13 @@ namespace quake3
 	public:
 		int32_t  mi_Texture;
 		int32_t  mi_Effect;
-		
+
 		enum type {
 			Polygon = 1, Patch = 2, Mesh = 3, Billboard = 4
 		};
 
 		int32_t  m_Type;
-		
+
 		int32_t  mi_Vertex;
 		uint32_t m_VertexCount;
 		int32_t  mi_MeshVertex;
@@ -258,7 +256,6 @@ namespace quake3
 			return m_VisData->m_Data[p_From * m_VisData->m_VectorSize + (p_To / 8)] & (1 << (p_To % 8));
 		}
 	};
-}
 
 #endif
 

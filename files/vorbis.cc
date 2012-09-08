@@ -46,12 +46,12 @@ namespace vorbis
 			int l_RetVal;
 
 			l_RetVal = ov_read(
-				&m_File, 
-				(char*) r_Data + l_Offset, 
-				p_Size - l_Offset, 
-				0, 
-				2, 
-				1, 
+				&m_File,
+				(char*) r_Data + l_Offset,
+				p_Size - l_Offset,
+				0,
+				2,
+				1,
 				&m_CurrentSection);
 
 			if(l_RetVal == 0)
