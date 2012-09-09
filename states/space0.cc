@@ -231,20 +231,30 @@ namespace cls
 			glEnd();
 		}
 
-		glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                glDepthMask (GL_FALSE);
 		if(l_Time > BEAT * 16 && l_Time < BEAT * 32)
 		{
 			float l_Scale = pow(sin((l_Time - BEAT * 16) / (BEAT * 16) * M_PI), 0.5);
-			glColor3f(l_Scale, l_Scale, l_Scale);
 
+			glColor4f(0.0f, 0.0f, 0.0f, l_Scale);
+			font::put_text(vector2( -7 * 0.10 + 0.01, 0.4 - 0.01), vector2( 7 * 0.10 + 0.01,  0.0 - 0.01), "fadeout");
+			font::put_text(vector2( -8 * 0.08 + 0.01, 0.0 - 0.01), vector2( 8 * 0.08 + 0.01, -0.4 - 0.01), "presents");
+
+			glColor4f(1.0f, 1.0f, 1.0f, l_Scale);
 			font::put_text(vector2( -7 * 0.10, 0.4), vector2( 7 * 0.10, 0.0), "fadeout");
 			font::put_text(vector2( -8 * 0.08, 0.0), vector2( 8 * 0.08,-0.4), "presents");
 		}
 		else if(l_Time > BEAT * 32 && l_Time < BEAT * 48)
 		{
 			float l_Scale = pow(sin((l_Time - BEAT * 32) / (BEAT * 16) * M_PI), 0.5);
-			glColor3f(l_Scale, l_Scale, l_Scale);
 
+			glColor4f(0.0f, 0.0f, 0.0f, l_Scale);
+			font::put_text(vector2( -1 * 0.10 + 0.01, 0.5 - 0.01), vector2( 1 * 0.10 + 0.01, 0.2 - 0.01), "a");
+			font::put_text(vector2( -7 * 0.10 + 0.01, 0.2 - 0.01), vector2( 7 * 0.10 + 0.01,-0.1 - 0.01), "TG 2002");
+			font::put_text(vector2(-12 * 0.08 + 0.01,-0.1 - 0.01), vector2(12 * 0.08 + 0.01,-0.4 - 0.01), "contribution");
+
+			glColor4f(1.0f, 1.0f, 1.0f, l_Scale);
 			font::put_text(vector2( -1 * 0.10, 0.5), vector2( 1 * 0.10, 0.2), "a");
 			font::put_text(vector2( -7 * 0.10, 0.2), vector2( 7 * 0.10,-0.1), "TG 2002");
 			font::put_text(vector2(-12 * 0.08,-0.1), vector2(12 * 0.08,-0.4), "contribution");
@@ -252,13 +262,19 @@ namespace cls
 		else if(l_Time > BEAT * 48 && l_Time < 34390 - BEAT / 2)
 		{
 			float l_Scale = pow(sin((l_Time - BEAT * 48) / ((34390 - BEAT / 2) - BEAT * 48) * M_PI), 0.5);
-			glColor3f(l_Scale, l_Scale, l_Scale);
+			glColor4f(0.0f, 0.0f, 0.0f, l_Scale);
+			font::put_text(vector2( -5 * 0.06 + 0.01, 0.7 - 0.01), vector2( 5 * 0.06 + 0.01, 0.4 - 0.01), "Norsk");
+			font::put_text(vector2(-15 * 0.06 + 0.01, 0.4 - 0.01), vector2(15 * 0.06 + 0.01, 0.1 - 0.01), "Forvaltningslov");
+			font::put_text(vector2( -3 * 0.06 + 0.01, 0.1 - 0.01), vector2( 3 * 0.06 + 0.01,-0.2 - 0.01), "for");
+			font::put_text(vector2(-10 * 0.06 + 0.01,-0.2 - 0.01), vector2(10 * 0.06 + 0.01,-0.5 - 0.01), "Reindrift");
 
+			glColor4f(1.0f, 1.0f, 1.0f, l_Scale);
 			font::put_text(vector2( -5 * 0.06, 0.7), vector2( 5 * 0.06, 0.4), "Norsk");
 			font::put_text(vector2(-15 * 0.06, 0.4), vector2(15 * 0.06, 0.1), "Forvaltningslov");
 			font::put_text(vector2( -3 * 0.06, 0.1), vector2( 3 * 0.06,-0.2), "for");
 			font::put_text(vector2(-10 * 0.06,-0.2), vector2(10 * 0.06,-0.5), "Reindrift");
 		}
+                glDepthMask (GL_TRUE);
 
 		glDisable(GL_BLEND);
 		glEnable(GL_DEPTH_TEST);
