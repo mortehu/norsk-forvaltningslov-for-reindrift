@@ -37,8 +37,8 @@ try
 	{
 		std::cerr << "Audio device inaccessible: "
 		          << p_RuntimeError.what()
-		          << ", running without sound"
 		          << std::endl;
+                return EXIT_FAILURE;
 	}
 
         vorbis::sound l_Music("data/music.ogg");
