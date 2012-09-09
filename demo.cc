@@ -1,4 +1,4 @@
-// *** Entry point for ``Norsk Forvaltningslov for Reinsdrift''
+// *** Entry point for ``Norsk Forvaltningslov for Reindrift''
 
 #include <iostream>
 #include <stdexcept>

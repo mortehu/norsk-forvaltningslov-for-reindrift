@@ -24,9 +24,9 @@ namespace cls
 		for(size_t i = 0; i < 512 * 512; i++)
 		{
 			l_Data[i * 3] =
-			l_Data[i * 3 + 1] = 
-			l_Data[i * 3 + 2] = 
-				(rand() % 120 == 0) ? 
+			l_Data[i * 3 + 1] =
+			l_Data[i * 3 + 2] =
+				(rand() % 120 == 0) ?
 					  ((size_t) ((double) rand() / RAND_MAX * 255))
 					: 0;
 		}
@@ -139,7 +139,7 @@ namespace cls
 		glPopMatrix();
 		glMatrixMode(GL_TEXTURE);
 		glPopMatrix();
-	
+
 		glDisable(GL_BLEND);
 
 		glColor3f(1, 1, 1);
@@ -203,8 +203,8 @@ namespace cls
 		glColor3f(1, 1, 0.95);
 		m_Flares[2].activate();
 		glBegin(GL_QUADS);
-		draw_billboard( 
-			vector2(l_Sun(0) - 0.3, l_Sun(1) + 0.4), 
+		draw_billboard(
+			vector2(l_Sun(0) - 0.3, l_Sun(1) + 0.4),
 			vector2(l_Sun(0) + 0.3, l_Sun(1) - 0.4));
 		glEnd();
 		float l_Intensity = 1 - l_Sun.magnitude() * 0.5;
@@ -224,8 +224,8 @@ namespace cls
 
 			glBegin(GL_QUADS);
 
-			draw_billboard( 
-				vector2(l_Pos(0) - 0.15 * l_Scale, l_Pos(1) + 0.2 * l_Scale), 
+			draw_billboard(
+				vector2(l_Pos(0) - 0.15 * l_Scale, l_Pos(1) + 0.2 * l_Scale),
 				vector2(l_Pos(0) + 0.15 * l_Scale, l_Pos(1) - 0.2 * l_Scale));
 
 			glEnd();
@@ -257,11 +257,11 @@ namespace cls
 			font::put_text(vector2( -5 * 0.06, 0.7), vector2( 5 * 0.06, 0.4), "Norsk");
 			font::put_text(vector2(-15 * 0.06, 0.4), vector2(15 * 0.06, 0.1), "Forvaltningslov");
 			font::put_text(vector2( -3 * 0.06, 0.1), vector2( 3 * 0.06,-0.2), "for");
-			font::put_text(vector2(-10 * 0.06,-0.2), vector2(10 * 0.06,-0.5), "Reinsdrift");
+			font::put_text(vector2(-10 * 0.06,-0.2), vector2(10 * 0.06,-0.5), "Reindrift");
 		}
 
 		glDisable(GL_BLEND);
 		glEnable(GL_DEPTH_TEST);
 	}
 };
- 
+
