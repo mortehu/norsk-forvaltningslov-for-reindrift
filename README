@@ -1,8 +1,9 @@
-This is a bit tidied version of the source code for ``Norsk Forvaltningslov for Reinsdrift''.
+This is a bit tidied version of the source code for "Norsk Forvaltningslov for
+Reindrift".
 
-Practically of the code is written by Morten Hustveit (aka. Circle of Fadeout). Source derived 
-from other sources are commented as such.
+Core written by Morten Hustveit in 2002. Source derived from other sources are
+commented as such.
 
-Two of the textures (the JFIF-JPEG ones) are copied from Quake 3. As far as I know, these are 
-freely redistributable. The reason for us using these, is that we didn't have time to make 
-our own replacements.
+Two of the textures (the JFIF-JPEG ones) are copied from Quake 3. As far as I
+know, these are freely redistributable. The reason for us using these, is that
+we didn't have time to make our own replacements.
