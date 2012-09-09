@@ -358,7 +358,7 @@ namespace cls
 
 			if(l_Time < BEAT * 16)
 			{
-				l_Text = "sailing in a sea of mushrooms";
+				l_Text = "roses are red";
 
 				if(l_Time < BEAT * 8)
 					l_LengthFactor = (l_Time / (BEAT * 8));
@@ -368,7 +368,7 @@ namespace cls
 			}
 			else if(l_Time < BEAT * 32)
 			{
-				l_Text = "eating nothing but shoelaces";
+				l_Text = "violets are blue";
 
 				if(l_Time < BEAT * 24)
 					l_LengthFactor = ((l_Time - (BEAT * 16)) / (BEAT * 8));
@@ -378,7 +378,7 @@ namespace cls
 			}
 			else if(l_Time < BEAT * 48)
 			{
-				l_Text = "enjoying a headache";
+				l_Text = "and so are you";
 
 				if(l_Time < BEAT * 40)
 					l_LengthFactor = ((l_Time - (BEAT * 32)) / (BEAT * 8));
